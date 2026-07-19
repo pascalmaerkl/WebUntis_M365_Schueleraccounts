@@ -27,7 +27,13 @@ jobs:
 
       - name: EXE mit PyInstaller bauen
         run: pyinstaller webuntis_m365.spec --noconfirm
-
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest
+          files: dist/*.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: EXE als Artefakt hochladen
         uses: actions/upload-artifact@v4
         with:
