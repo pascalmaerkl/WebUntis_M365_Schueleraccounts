@@ -1,0 +1,36 @@
+name: Build Windows EXE
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  build-exe:
+    runs-on: windows-latest
+
+    steps:
+      - name: Repository auschecken
+        uses: actions/checkout@v4
+
+      - name: Python einrichten
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Abhängigkeiten installieren
+        run: pip install -r requirements.txt
+
+      - name: EXE mit PyInstaller bauen
+        run: pyinstaller webuntis_m365.spec --noconfirm
+
+      - name: EXE als Artefakt hochladen
+        uses: actions/upload-artifact@v4
+        with:
+          name: WebUntis_M365_Schueleraccounts-Windows
+          path: dist/WebUntis_M365_Schueleraccounts.exe
+          if-no-files-found: error
